@@ -1,14 +1,15 @@
 import React from 'react';
 import CSVReader from './components/CsvReader';
 import { CSVDataContext } from './Context/csvDATA';
+import WeatherData from './components/WeatherData';
 
 function App() {
   const { csvData, updateCSVData } = React.useContext(CSVDataContext);
 
   const handleButtonClick = () => {
-    // Your logic to execute on button click
-    console.log(csvData);
-    // Add more logic or actions here
+
+    console.log({csvData});
+  
   };
 
   return (
@@ -22,6 +23,7 @@ function App() {
         Light
       </button>
       <CSVReader />
+      <WeatherData/>
     </div>
   );
 }

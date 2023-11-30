@@ -17,12 +17,12 @@ function CSVReader() {
             const data = result.data;
             
            
-            const requiredFields = ['id', 'city-name', 'date', 'temperature', 'humidity', 'wind_speed'];
+            const requiredFields = ['city_name', 'date', 'temperature', 'humidity', 'wind_speed'];
             const csvHeader = Object.keys(data[0]);
             const missingFields = requiredFields.filter(field => !csvHeader.includes(field));
   
             if (missingFields.length > 0) {
-              setErrorMessage(`Missing fields in CSV: ${missingFields.join(', ')}`);
+              setErrorMessage(`Missing fields in CSV: ${missingFields.join(' , ')}`);
               updateCSVData([]);
             } else {
               setErrorMessage('');
@@ -47,8 +47,7 @@ console.log({csvData})
         <input type="file" onChange={handleFileUpload} />
         {errorMessage && <p>Error: {errorMessage}</p>}
         <div>
-          <h2>Parsed CSV Data:</h2>
-          <pre>{JSON.stringify(csvData, null, 2)}</pre>
+        {csvData && csvData.length > 0 ? <p>File Entered</p> : <p>Please enter a file</p>}
         </div>
       </div>
     );

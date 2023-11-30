@@ -1,4 +1,4 @@
-id,city-name,date,temperature,humidity,wind_speed
+id,city_name,date,temperature,humidity,wind_speed
 1,Sialkot,4/3,19.6,56.45,5.8
 2,Quetta,30/7,47.2,54.08,19.36
 3,Faisalabad,18/11,42.2,72.55,14.3
