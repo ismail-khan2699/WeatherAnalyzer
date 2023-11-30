@@ -177,37 +177,64 @@ function WeatherData() {
 
     return (
       <div>
-        <div className='flex p-6'>
-       <h3>Select a City:</h3>
-      <select value={selectedCity} onChange={handleCityChange} className='border-2 bg-gray-500 bg-opacity-40 mx-4'>
+     <div className='flex p-6'>
+         <h3>Select a City:</h3>
+         <select value={selectedCity} onChange={handleCityChange} className='border-2 bg-gray-500 bg-opacity-40 mx-4'>
         <option value="">Select a city</option>
         {uniqueCities.map((city, index) => (
           <option key={index} value={city}>
             {city}
           </option>
         ))}
-      </select>
-      <div className='flex'>
-      <p>{startDate}</p>
-      <Slider range defaultValue={[0, 365]} allowCross={false} onChange={handleChange} className='w-32' />
-      <p>{endDate}</p>
-    </div>
+        </select>
+        <div className='flex'>
+        <p>{startDate}</p>
+        <Slider range defaultValue={[0, 365]} allowCross={false} onChange={handleChange} className='w-32 mx-6' />
+        <p>{endDate}</p>
+        </div>
       </div>
-    
+      <p>Data from:  {earliestDate.toLocaleDateString()} to : {oldestDate.toLocaleDateString()}</p>
         <div>
           <h3>Data for {selectedCity}:</h3>
-          <ul>
-            {FilterData.map((record, index) => (
-              <li key={index}>
-                City: {record.city_name}, Date: {record.date}, Temperature: {record.temperature}, Humidity: {record.humidity}, Wind Speed: {record.wind_speed}
-              </li>
-            ))}
-          </ul>
+          <div className="h-60 w-fit overflow-y-auto rounded-xl bg-gray-300 bg-opacity-50">
+          <ul className="list-decimal w-full px-2">
+        <li className='flex w-full pl-4'>
+        <span className="font-semibold w-16">Index:</span>
+        <span className="font-semibold w-28">City:</span>
+        <span className="font-semibold w-32">Date: </span>
+        <span className="font-semibold w-28">Temperature: </span>
+        <span className="font-semibold w-20">Humidity: </span>
+        <span className="font-semibold pl-2 w-28">Wind Speed: </span>    
+             </li>
+  {FilterData.map((record, index) => (
+    <li key={index} className="pl-4 hover:bg-gray-500 hover:rounded-lg hover:bg-opacity-50">
+      <div className="flex">
+        <span className="font-semibold w-16">{index}</span>
+        <span className=" w-28">{record.city_name} </span>
+        <span className=" w-32">{record.date}</span>
+        <span className="flex justify-between w-28">
+            <span className='pl-4'>{record.temperature}</span>
+            <span className='pr-8 font-semibold'>°C</span>
+        </span>
+        <span className="flex justify-between w-20">
+            <span className='pl-2'>{record.humidity}</span>
+            <span className='pr-4 font-semibold'>%</span>
+        </span>
+        <span className="flex justify-between w-28">
+            <span className='pl-2'>{record.wind_speed}</span>
+            <span className='pr-2 font-semibold'>km/h</span>
+        </span>
+      </div>
+    </li>
+  ))}
+</ul>
+
+</div>
+
         </div>
 
   
-        <p>Earliest Date: {earliestDate.toLocaleDateString()}</p>
-        <p>Oldest Date: {oldestDate.toLocaleDateString()}</p>
+        
         <p>Average Temperature: {averageTemperature.toFixed(2)}</p>
         <p>Highest Average Temperature: {highestAvgTemp.highestAverageTemp.toFixed(2)} in {highestAvgTemp.city}</p>
       </div>
