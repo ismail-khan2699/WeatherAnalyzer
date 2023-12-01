@@ -3,6 +3,8 @@ import { useContext, useEffect, useState } from 'react';
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
 import WeatherRecord from './WeatherRecord';
+import TemperatureGraph from './ChartComponent';
+
 
 function WeatherData() {
     const { csvData } = useContext(CSVDataContext);
@@ -18,6 +20,8 @@ function WeatherData() {
     var { earliestDate, oldestDate } = WeatherRecord.findEarliestAndOldestDates(csvData);
     const [startDate, setStartDate] = useState(earliestDate.toLocaleDateString('en-GB'));
     const [endDate, setEndDate] = useState(oldestDate.toLocaleDateString('en-GB'));
+    const [allDates, setAllDates] = useState(WeatherRecord.getDatesFromCsvData(FilterData));
+    const [allTemp, setAllTemp] = useState(WeatherRecord.getTemperaturesFromCsvData(FilterData));
 
     useEffect(()=>{
         setShowData(csvData);
@@ -30,8 +34,13 @@ function WeatherData() {
         setEndDate(oldestDate.toLocaleDateString('en-GB'));
         setDateData(csvData);
        setFilterData(showData);
+       console.log(FilterData);
+       console.log(allDates);
+       console.log(allTemp);
 
     },[csvData])
+
+
 
     useEffect(() => {
           
@@ -43,6 +52,8 @@ function WeatherData() {
     setaverageTemperature(WeatherRecord.calculateAverageTemperature(FilterData));
     setaverageHumidity(WeatherRecord.calculateAverageHumidity(FilterData));
     setaverageWindSpeed(WeatherRecord.calculateAverageWindSpeed(FilterData));
+    setAllDates(WeatherRecord.getDatesFromCsvData(FilterData));
+    setAllTemp(WeatherRecord.getTemperaturesFromCsvData(FilterData));
      },[FilterData])
 
     useEffect(() => {
@@ -61,6 +72,12 @@ function WeatherData() {
     const handleCityChange = (event) => {
         setShowData(WeatherRecord.getDataByCity(csvData, event.target.value));
         setSelectedCity(event.target.value)
+    };
+    const formatDates = (dates) => {
+      return dates.map((dateString) => {
+        const [day, month, year] = dateString.split('/');
+        return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+      });
     };
           
     const handleChange = (newValues) => {
@@ -143,9 +160,9 @@ function WeatherData() {
         </div>
         </div>
         </div>
-
-  
-      
+        <div className='w-auto h-28'>
+        <TemperatureGraph dates={formatDates(allDates)} temperatures={allTemp}/>
+        </div>
       </div>
     );
   }

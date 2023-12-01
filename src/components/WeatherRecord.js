@@ -106,7 +106,14 @@ class WeatherRecord {
     
       return { city: cityWithHighestAverage, highestAverageTemp: highestAverage };
     }
-    
+    static getDatesFromCsvData = (csvData) => {
+        return csvData.map((record) => record.date);
+      };
+      
+      // Function to extract an array of temperatures from csvData
+      static getTemperaturesFromCsvData = (csvData) => {
+        return csvData.map((record) => record.temperature);
+      };
   
   }
 
