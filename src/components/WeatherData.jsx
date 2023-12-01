@@ -2,132 +2,22 @@ import { CSVDataContext } from '../Context/csvDATA';
 import { useContext, useEffect, useState } from 'react';
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
-
-class WeatherRecord {
-  constructor(city_name, date, temperature, humidity, wind_speed) {
-    this.city_name = city_name;
-    this.date = date;
-    this.temperature = temperature;
-    this.humidity = humidity;
-    this.wind_speed = wind_speed;
-  }
-
-  static parseDate(dateString) {
-    const dateParts = dateString.split(/[/-]/);
-    let day = parseInt(dateParts[0], 10);
-    let month = parseInt(dateParts[1], 10);
-    let year = dateParts.length === 3 ? parseInt(dateParts[2], 10) : new Date().getFullYear();
-  
-    // Adjusting the year if the format is dd/mm or dd/mm/yy
-    if (dateParts.length <= 2) {
-      const currentYear = new Date().getFullYear();
-      year = parseInt(currentYear.toString().slice(0, 2) + dateParts[2], 10);
-      year = year > currentYear ? year - 100 : year;
-    }
-  
-    return new Date(year, month - 1, day);
-  }
-  
-
-  static getDataByDateRange(csvData, startDate, endDate) {
-    const start = this.parseDate(startDate);
-    const end = this.parseDate(endDate);
-    
-    return csvData.filter((record) => {
-      const currentDate = this.parseDate(record.date);
-      return currentDate >= start && currentDate <= end;
-    });
-  }
-
-  static getDataByCity(csvData, cityName) {
-    if (!cityName) {
-      return csvData;
-    }
-  
-    const filteredData = csvData.filter(record => record.city_name === cityName);
-    return filteredData.length > 0 ? filteredData : null;
-  }
-  
-
-  static getUniqueCities(csvData) {
-    return [...new Set(csvData.map(record => record.city_name))];
-  }
-
-  static findEarliestAndOldestDates(csvData) {
-
-    let earliestDate = this.parseDate(csvData[0].date);
-    let oldestDate = this.parseDate(csvData[0].date);
-
-    csvData.forEach((record) => {
-      const currentDate = this.parseDate(record.date);
-
-      if (currentDate < earliestDate) {
-        earliestDate = currentDate;
-      }
-
-      if (currentDate > oldestDate) {
-        oldestDate = currentDate;
-      }
-    });
-
-    return { earliestDate, oldestDate };
-  };
-  static calculateAverageTemperature = (data) => {
-    const totalTemperature = data.reduce((acc, record) => acc + record.temperature, 0);
-    return totalTemperature / data.length;
-  };
-  static calculateAverageHumidity = (data) => {
-    const totalhumidity = data.reduce((acc, record) => acc + record.humidity, 0);
-    return totalhumidity / data.length;
-  };
-  static calculateAverageWindSpeed = (data) => {
-    const totalwind_speed = data.reduce((acc, record) => acc + record.wind_speed, 0);
-    return totalwind_speed / data.length;
-  };
-
-  static findHighestAverageTemperature(data) {
-    const cities = {};
-  
-    // Calculate average temperature for each city
-    data.forEach((record) => {
-      if (!cities[record.city_name]) {
-        cities[record.city_name] = { totalTemp: 0, count: 0 };
-      }
-      cities[record.city_name].totalTemp += record.temperature;
-      cities[record.city_name].count++;
-    });
-  
-    // Calculate averages and find the highest
-    let highestAverage = 0;
-    let cityWithHighestAverage = '';
-  
-    for (const city in cities) {
-      const avgTemp = cities[city].totalTemp / cities[city].count;
-      if (avgTemp > highestAverage) {
-        highestAverage = avgTemp;
-        cityWithHighestAverage = city;
-      }
-    }
-  
-    return { city: cityWithHighestAverage, highestAverageTemp: highestAverage };
-  }
-  
-
-}
+import WeatherRecord from './WeatherRecord';
 
 function WeatherData() {
     const { csvData } = useContext(CSVDataContext);
     const [selectedCity, setSelectedCity] = useState('All'); 
     const [showData, setShowData] = useState(csvData);
+    const [DateData, setDateData] = useState(csvData);
     const [uniqueCities, setuniqueCities] = useState(WeatherRecord.getUniqueCities(csvData));
-    const [averageTemperature, setaverageTemperature] = useState(WeatherRecord.calculateAverageTemperature(csvData));
-    const [highestAvgTemp, sethighestAvgTemp] = useState(WeatherRecord.findHighestAverageTemperature(csvData));
-    const [averageHumidity, setaverageHumidity] = useState(WeatherRecord.calculateAverageHumidity(csvData));
-    const [averageWindSpeed, setaverageWindSpeed] = useState(WeatherRecord.calculateAverageWindSpeed(csvData));
-    var { earliestDate, oldestDate } = WeatherRecord.findEarliestAndOldestDates(csvData);
-    const [startDate, setStartDate] = useState(earliestDate.toLocaleDateString());
-    const [endDate, setEndDate] = useState(oldestDate.toLocaleDateString());
     const [FilterData, setFilterData] = useState(showData);
+    const [highestAvgTemp, sethighestAvgTemp] = useState(WeatherRecord.findHighestAverageTemperature(showData));
+    const [averageTemperature, setaverageTemperature] = useState(WeatherRecord.calculateAverageTemperature(FilterData));
+    const [averageHumidity, setaverageHumidity] = useState(WeatherRecord.calculateAverageHumidity(FilterData));
+    const [averageWindSpeed, setaverageWindSpeed] = useState(WeatherRecord.calculateAverageWindSpeed(FilterData));
+    var { earliestDate, oldestDate } = WeatherRecord.findEarliestAndOldestDates(csvData);
+    const [startDate, setStartDate] = useState(earliestDate.toLocaleDateString('en-GB'));
+    const [endDate, setEndDate] = useState(oldestDate.toLocaleDateString('en-GB'));
 
     useEffect(()=>{
         setShowData(csvData);
@@ -136,8 +26,9 @@ function WeatherData() {
         sethighestAvgTemp(WeatherRecord.findHighestAverageTemperature(csvData));
         setaverageHumidity(WeatherRecord.calculateAverageHumidity(csvData));
         setaverageWindSpeed(WeatherRecord.calculateAverageWindSpeed(csvData));
-        setStartDate(earliestDate.toLocaleDateString());
-        setEndDate(oldestDate.toLocaleDateString());
+        setStartDate(earliestDate.toLocaleDateString('en-GB'));
+        setEndDate(oldestDate.toLocaleDateString('en-GB'));
+        setDateData(csvData);
        setFilterData(showData);
 
     },[csvData])
@@ -146,12 +37,24 @@ function WeatherData() {
           
         setFilterData(showData);
 
-
     }, [showData]);
+     useEffect(()=>{
+      
+    setaverageTemperature(WeatherRecord.calculateAverageTemperature(FilterData));
+    setaverageHumidity(WeatherRecord.calculateAverageHumidity(FilterData));
+    setaverageWindSpeed(WeatherRecord.calculateAverageWindSpeed(FilterData));
+     },[FilterData])
+
+    useEffect(() => {
+          
+      sethighestAvgTemp(WeatherRecord.findHighestAverageTemperature(DateData));
+
+  }, [DateData]);
+
     useEffect(() => {
     
         setFilterData( WeatherRecord.getDataByDateRange(showData, startDate, endDate));
-
+        setDateData( WeatherRecord.getDataByDateRange(csvData, startDate, endDate));
       
     }, [startDate , endDate]);
     
@@ -193,10 +96,11 @@ function WeatherData() {
         <p>{endDate}</p>
         </div>
       </div>
-      <p>Data from:  {earliestDate.toLocaleDateString()} to : {oldestDate.toLocaleDateString()}</p>
+      <p>Data from:  {earliestDate.toLocaleDateString('en-GB')} to : {oldestDate.toLocaleDateString('en-GB')}</p>
         <div>
           <h3>Data for {selectedCity}:</h3>
-          <div className="h-60 w-fit overflow-y-auto rounded-xl bg-gray-300 bg-opacity-50">
+          <div className={`flex justify-between flex-container`}>
+          <div className="h-60 min-w-fit overflow-y-auto rounded-xl bg-gray-300 bg-opacity-50">
           <ul className="list-decimal w-full px-2">
         <li className='flex w-full pl-4'>
         <span className="font-semibold w-16">Index:</span>
@@ -229,14 +133,19 @@ function WeatherData() {
   ))}
 </ul>
 
-</div>
+          </div>
+        <div className='mx-2 max-w-5/12 min-w-fit'>
+          <h1 className='min-w-100 max-w-full'>Average Temp: {averageTemperature.toFixed(2)}</h1>
+          <h1>Average Humidity: {averageHumidity.toFixed(2)}</h1>
+          <h1>Average WindSpeed:  {averageWindSpeed.toFixed(2)}</h1>
+          <h1>Highest Average Temperature by Date Range: {highestAvgTemp.highestAverageTemp.toFixed(2)} in {highestAvgTemp.city}</h1>
 
+        </div>
+        </div>
         </div>
 
   
-        
-        <p>Average Temperature: {averageTemperature.toFixed(2)}</p>
-        <p>Highest Average Temperature: {highestAvgTemp.highestAverageTemp.toFixed(2)} in {highestAvgTemp.city}</p>
+      
       </div>
     );
   }

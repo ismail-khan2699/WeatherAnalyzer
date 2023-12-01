@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import Papa from 'papaparse';
 import { CSVDataContext } from '../Context/csvDATA';
+import WeatherRecord from './WeatherRecord';
 
 function CSVReader() {
     const { csvData, updateCSVData } = useContext(CSVDataContext);
@@ -13,20 +14,18 @@ function CSVReader() {
           header: true,
           dynamicTyping: true,
           complete: (result) => {
-          
             const data = result.data;
-            
-           
             const requiredFields = ['city_name', 'date', 'temperature', 'humidity', 'wind_speed'];
             const csvHeader = Object.keys(data[0]);
             const missingFields = requiredFields.filter(field => !csvHeader.includes(field));
-  
+            
             if (missingFields.length > 0) {
               setErrorMessage(`Missing fields in CSV: ${missingFields.join(' , ')}`);
               updateCSVData([]);
             } else {
-              setErrorMessage('');
-              updateCSVData(data);
+              const parsedData = validateAndFormatDate(data);
+              const sortedData = parsedData.sort((a, b) => new Date(a.date) - new Date(b.date));
+              updateCSVData(sortedData);
             }
           },
           error: (error) => {
@@ -37,6 +36,34 @@ function CSVReader() {
         });
       }
     };
+    
+    const validateAndFormatDate = (data) => {
+      const currentDate = new Date();
+    
+      return data.map(record => {
+        let parsedDate = WeatherRecord.parseDate(record.date);
+    
+        // Check if date is in mm/dd or dd/mm format and adjust
+        if (isNaN(parsedDate.getTime())) {
+          const dateParts = record.date.split(/[/-]/);
+          const possibleYear = dateParts[dateParts.length - 1];
+          const year = possibleYear.length === 4 ? possibleYear : currentDate.getFullYear();
+          const possibleMonth = parseInt(dateParts[0], 10);
+          const possibleDay = parseInt(dateParts[1], 10);
+    
+          if (possibleMonth <= 12 && possibleDay <= 31) {
+            parsedDate = new Date(year, possibleMonth - 1, possibleDay);
+          }
+        }
+    
+        // Format date as dd/mm/yyyy
+        const formattedDate = `${parsedDate.getDate().toString().padStart(2, '0')}/${(parsedDate.getMonth() + 1).toString().padStart(2, '0')}/${parsedDate.getFullYear()}`;
+    
+        return { ...record, date: formattedDate };
+      });
+    };
+    
+    
   useEffect(()=>{
 
 console.log({csvData})
@@ -47,7 +74,7 @@ console.log({csvData})
         <input type="file" onChange={handleFileUpload} />
         {errorMessage && <p>Error: {errorMessage}</p>}
         <div>
-        {csvData && csvData.length > 0 ? <p>File Entered</p> : <p>Please enter a file</p>}
+        {csvData && csvData.length > 1 ? <p>File Entered</p> : <p>Please enter a file with more Than 1 Object</p>}
         </div>
       </div>
     );
