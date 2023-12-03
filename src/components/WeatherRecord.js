@@ -35,7 +35,7 @@ class WeatherRecord {
     }
   
     static getDataByCity(csvData, cityName) {
-      if (!cityName) {
+      if (!cityName || cityName ==='') {
         return csvData;
       }
     
@@ -113,6 +113,14 @@ class WeatherRecord {
       // Function to extract an array of temperatures from csvData
       static getTemperaturesFromCsvData = (csvData) => {
         return csvData.map((record) => record.temperature);
+      };
+
+      static getHumidityFromCsvData = (csvData) => {
+        return csvData.map((record) => record.humidity);
+      };
+
+      static getWindspeedFromCsvData = (csvData) => {
+        return csvData.map((record) => record.wind_speed);
       };
   
   }

@@ -8,7 +8,7 @@ import TemperatureGraph from './ChartComponent';
 
 function WeatherData() {
     const { csvData } = useContext(CSVDataContext);
-    const [selectedCity, setSelectedCity] = useState('All'); 
+    const [selectedCity, setSelectedCity] = useState(""); 
     const [showData, setShowData] = useState(csvData);
     const [DateData, setDateData] = useState(csvData);
     const [uniqueCities, setuniqueCities] = useState(WeatherRecord.getUniqueCities(csvData));
@@ -22,6 +22,8 @@ function WeatherData() {
     const [endDate, setEndDate] = useState(oldestDate.toLocaleDateString('en-GB'));
     const [allDates, setAllDates] = useState(WeatherRecord.getDatesFromCsvData(FilterData));
     const [allTemp, setAllTemp] = useState(WeatherRecord.getTemperaturesFromCsvData(FilterData));
+    const [allHumidity, setAllHumidity] = useState(WeatherRecord.getHumidityFromCsvData(FilterData));
+    const [allWindspeed, setAllWindspeed] = useState(WeatherRecord.getWindspeedFromCsvData(FilterData));
 
     useEffect(()=>{
         setShowData(csvData);
@@ -34,9 +36,7 @@ function WeatherData() {
         setEndDate(oldestDate.toLocaleDateString('en-GB'));
         setDateData(csvData);
        setFilterData(showData);
-       console.log(FilterData);
-       console.log(allDates);
-       console.log(allTemp);
+    
 
     },[csvData])
 
@@ -54,6 +54,9 @@ function WeatherData() {
     setaverageWindSpeed(WeatherRecord.calculateAverageWindSpeed(FilterData));
     setAllDates(WeatherRecord.getDatesFromCsvData(FilterData));
     setAllTemp(WeatherRecord.getTemperaturesFromCsvData(FilterData));
+    setAllHumidity(WeatherRecord.getHumidityFromCsvData(FilterData));
+   setAllWindspeed(WeatherRecord.getWindspeedFromCsvData(FilterData));
+
      },[FilterData])
 
     useEffect(() => {
@@ -70,9 +73,12 @@ function WeatherData() {
     }, [startDate , endDate]);
     
     const handleCityChange = (event) => {
-        setShowData(WeatherRecord.getDataByCity(csvData, event.target.value));
-        setSelectedCity(event.target.value)
-    };
+    const selectedValue = event.target.value;
+    console.log({selectedValue});
+    setShowData(WeatherRecord.getDataByCity(csvData, selectedValue));
+    setSelectedCity(selectedValue);
+};
+
     const formatDates = (dates) => {
       return dates.map((dateString) => {
         const [day, month, year] = dateString.split('/');
@@ -96,26 +102,12 @@ function WeatherData() {
     
 
     return (
-      <div>
-     <div className='flex p-6'>
-         <h3>Select a City:</h3>
-         <select value={selectedCity} onChange={handleCityChange} className='border-2 bg-gray-500 bg-opacity-40 mx-4'>
-        <option value="">Select a city</option>
-        {uniqueCities.map((city, index) => (
-          <option key={index} value={city}>
-            {city}
-          </option>
-        ))}
-        </select>
-        <div className='flex'>
-        <p>{startDate}</p>
-        <Slider range defaultValue={[0, 365]} allowCross={false} onChange={handleChange} className='w-32 mx-6' />
-        <p>{endDate}</p>
-        </div>
-      </div>
-      <p>Data from:  {earliestDate.toLocaleDateString('en-GB')} to : {oldestDate.toLocaleDateString('en-GB')}</p>
-        <div>
-          <h3>Data for {selectedCity}:</h3>
+      <div className='flex'>
+    
+        <div className='w-3/4 p-4'>
+     {selectedCity ==="" ?  <h3 className='px-6 py-4 my-2 text-xl text-white bg-red-600 hover:bg-red-200 hover:text-blue-700 bg-opacity-60 rounded-lg items-center justify-center font-serif'>Data form All Cities</h3> 
+     :
+       <h3 className='px-6 py-4 my-2 text-xl text-white bg-red-600 hover:bg-red-200 hover:text-blue-700 bg-opacity-60 rounded-lg items-center justify-center font-serif'>Data for {selectedCity}:</h3> }  
           <div className={`flex justify-between flex-container`}>
           <div className="h-60 min-w-fit overflow-y-auto rounded-xl bg-gray-300 bg-opacity-50">
           <ul className="list-decimal w-full px-2">
@@ -151,18 +143,45 @@ function WeatherData() {
 </ul>
 
           </div>
-        <div className='mx-2 max-w-5/12 min-w-fit'>
-          <h1 className='min-w-100 max-w-full'>Average Temp: {averageTemperature.toFixed(2)}</h1>
-          <h1>Average Humidity: {averageHumidity.toFixed(2)}</h1>
-          <h1>Average WindSpeed:  {averageWindSpeed.toFixed(2)}</h1>
-          <h1>Highest Average Temperature by Date Range: {highestAvgTemp.highestAverageTemp.toFixed(2)} in {highestAvgTemp.city}</h1>
-
+        <div className='mx-2 min-w-fit'>
+          <h1 className='min-w-100 max-w-full py-2 my-5 text-xl font-semibold hover:font-bold hover:underline hover:decoration-emerald-500 '>Average Temp: {averageTemperature.toFixed(2)}</h1>
+          <h1 className='min-w-100 max-w-full py-2 my-5 text-xl font-semibold hover:underline hover:decoration-emerald-500 hover:font-bold'>Average Humidity: {averageHumidity.toFixed(2)}</h1>
+          <h1 className='min-w-100 max-w-full py-2 my-5 text-xl font-semibold hover:underline hover:decoration-emerald-500 hover:font-bold'>Average WindSpeed:  {averageWindSpeed.toFixed(2)}</h1>
         </div>
         </div>
+        {selectedCity ==="" ? <p className='bg-red-100 my-10 rounded-lg px-10 font-mono font-bold bg-opacity-50 py-5 items-center justify-center mx-20'>
+          Please Select a City to see Graph !</p>
+          
+          :
+        
+        <div className='max-w-auto h-fit min-w-screen-sm'>
+        <TemperatureGraph dates={formatDates(allDates)} temperatures={allTemp} label1={'Temperature'} color={'#22092C'} bgc={'#872341'}/>
+        <TemperatureGraph dates={formatDates(allDates)} temperatures={allHumidity} label1={'Humidity'} color={'#EC8F5E'} bgc={'#F1EB90'}/>
+        <TemperatureGraph dates={formatDates(allDates)} temperatures={allWindspeed} label1={'Wind Speed'} color={'aqua'} bgc={'#2D9596'}/>
         </div>
-        <div className='w-auto h-28'>
-        <TemperatureGraph dates={formatDates(allDates)} temperatures={allTemp}/>
+        }
+        
         </div>
+        <div className='p-6 w-1/4 bg-slate-100 m-4 rounded-lg h-screen'>
+         <h3 className=' font-semibold'>Filter by City:</h3>
+         <select value={selectedCity} onChange={handleCityChange} className='border-3 bg-gray-600 rounded-md m-4 bg-opacity-40 mx-4'>
+        <option className='hover:underline hover:divide-emerald-400' value="">ALL</option>
+        {uniqueCities.map((city, index) => (
+          <option key={index} value={city}>
+            {city}
+          </option>
+        ))}
+        </select>
+        <h3 className=' py-4 my-2 font-semibold'>Filter By Range: </h3>
+        <div class="flex items-center justify-center">
+        <Slider range defaultValue={[0, 365]} allowCross={false} onChange={handleChange} className=' w-48'/>
+        </div>
+        <div className='my-4 flex justify-between'>
+        <p>{startDate}</p>
+        <p>{endDate}</p>
+        </div>
+        <h1 className=' font-semibold my-6'>Highest Average Temperature by Date Range: <br/> <span className='hover:font-bold hover:underline font-mono font-semibold hover:decoration-emerald-400 m-4 p-4'>{highestAvgTemp.highestAverageTemp.toFixed(2)} in {highestAvgTemp.city}</span></h1>
+      </div>
       </div>
     );
   }

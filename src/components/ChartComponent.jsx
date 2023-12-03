@@ -15,8 +15,8 @@ ChartJs.register(
     Legend
 );
 
-const TemperatureGraph = ({dates, temperatures}) => {
-    
+const TemperatureGraph = ({dates, temperatures, color, label1, bgc}) => {
+ 
     console.log({dates});
     if (!Array.isArray(dates) || !Array.isArray(temperatures)) {
         return null; // Return null or handle the case when data is not in the expected format
@@ -44,11 +44,11 @@ const TemperatureGraph = ({dates, temperatures}) => {
     labels: sortedDates,
     datasets: [
       {
-        label: 'Temperature',
+        label: label1,
         data: sortedTemperatures,
         fill: false,
-        backgroundColor: 'aqua',
-        borderColor: 'rgb(75, 192, 192)',
+        backgroundColor: color,
+        borderColor: bgc,
         tension: 0,
       },
     ],
@@ -71,9 +71,9 @@ const TemperatureGraph = ({dates, temperatures}) => {
   };
 
   return (
-    <div className=' h-96'>
+    <div className='mt-10 h-96'>
       
-      <h2>Temperature Graph</h2>
+      <h2>{label1} Graph</h2>
       
       <Line 
       data={data} 
