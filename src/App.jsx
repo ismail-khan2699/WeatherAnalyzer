@@ -12,7 +12,7 @@ function App() {
       <h1 className='text-3xl font-extrabold p-10 underline  text-white'>Weather Analyzer Component </h1>
       <CSVReader />
       </div>
-      {csvData && csvData.length > 1 ? <WeatherData/> : <p>Please Enter Data</p>}
+      {csvData && csvData.length > 1 ? <WeatherData/> : <p className=' text-3xl text-red-600 hover:underline hover:decoration-white font-mono font-bold m-10'>Please Enter Data</p>}
       
     </div>
   );

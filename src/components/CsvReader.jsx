@@ -64,14 +64,14 @@ function CSVReader() {
     };
     
     
-  useEffect(()=>{
+  function abc(){
 
     setErrorMessage('');
 
-  },[handleFileUpload])
+  };
     return (
       <div className=' pt-4 mt-6'>
-        <input type="file" onChange={handleFileUpload} />
+        <input type="file" onChange={handleFileUpload} onClick={abc} />
         {errorMessage && <p className=' text-xl bg-white'>Error: {errorMessage}</p>}
         <div>
         {csvData && csvData.length > 1 ? <p className=' text-green-600 text-lg bg-slate-50 bg-opacity-40 my-2 mr-10 pl-3'>File Entered !</p> : null}
