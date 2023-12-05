@@ -66,15 +66,15 @@ function CSVReader() {
     
   useEffect(()=>{
 
-console.log({csvData})
+    setErrorMessage('');
 
-  },[csvData])
+  },[handleFileUpload])
     return (
-      <div>
+      <div className=' pt-4 mt-6'>
         <input type="file" onChange={handleFileUpload} />
-        {errorMessage && <p>Error: {errorMessage}</p>}
+        {errorMessage && <p className=' text-xl bg-white'>Error: {errorMessage}</p>}
         <div>
-        {csvData && csvData.length > 1 ? <p>File Entered</p> : <p>Please enter a file with more Than 1 Object</p>}
+        {csvData && csvData.length > 1 ? <p className=' text-green-600 text-lg bg-slate-50 bg-opacity-40 my-2 mr-10 pl-3'>File Entered !</p> : null}
         </div>
       </div>
     );

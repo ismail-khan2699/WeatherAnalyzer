@@ -15,7 +15,7 @@ ChartJs.register(
     Legend
 );
 
-const TemperatureGraph = ({dates, temperatures, color, label1, bgc}) => {
+const TemperatureGraph = ({dates, temperatures, color, label1, bgc, backgroundcColor}) => {
  
     console.log({dates});
     if (!Array.isArray(dates) || !Array.isArray(temperatures)) {
@@ -34,7 +34,7 @@ const TemperatureGraph = ({dates, temperatures, color, label1, bgc}) => {
         const dateB = new Date(b.date);
         return dateA - dateB;
       });
-    
+
       // Separate the sorted dates and temperatures
       const sortedDates = datas.map((item) => item.date);
       const sortedTemperatures = datas.map((item) => item.temperature);
@@ -71,7 +71,7 @@ const TemperatureGraph = ({dates, temperatures, color, label1, bgc}) => {
   };
 
   return (
-    <div className='mt-10 h-96'>
+    <div className='mt-10 max-w-full min-w-fit' style={backgroundcColor= {backgroundcColor}}>
       
       <h2>{label1} Graph</h2>
       

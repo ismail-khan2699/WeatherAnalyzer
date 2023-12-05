@@ -105,13 +105,13 @@ function WeatherData() {
       <div className='flex'>
     
         <div className='w-3/4 p-4'>
-     {selectedCity ==="" ?  <h3 className='px-6 py-4 my-2 text-xl text-white bg-red-600 hover:bg-red-200 hover:text-blue-700 bg-opacity-60 rounded-lg items-center justify-center font-serif'>Data form All Cities</h3> 
+     {selectedCity ==="" ?  <h3 className='px-6 py-4 my-2 text-xl text-white bg-blue-600 hover:bg-blue-200 hover:text-blue-700 bg-opacity-60 rounded-lg items-center justify-center font-serif'>Data form All Cities</h3> 
      :
-       <h3 className='px-6 py-4 my-2 text-xl text-white bg-red-600 hover:bg-red-200 hover:text-blue-700 bg-opacity-60 rounded-lg items-center justify-center font-serif'>Data for {selectedCity}:</h3> }  
+       <h3 className='px-6 py-4 my-2 text-xl text-white bg-blue-600 hover:bg-blue-200 hover:text-blue-700 bg-opacity-60 rounded-lg items-center justify-center font-serif'>Data for {selectedCity}:</h3> }  
           <div className={`flex justify-between flex-container`}>
-          <div className="h-60 min-w-fit overflow-y-auto rounded-xl bg-gray-300 bg-opacity-50">
+          <div className=" h-72 overflow-x-auto overflow-y-auto bg-gray-300 bg-opacity-50">
           <ul className="list-decimal w-full px-2">
-        <li className='flex w-full pl-4'>
+        <li className='flex w-full pl-2'>
         <span className="font-semibold w-16">Index:</span>
         <span className="font-semibold w-28">City:</span>
         <span className="font-semibold w-32">Date: </span>
@@ -120,21 +120,21 @@ function WeatherData() {
         <span className="font-semibold pl-2 w-28">Wind Speed: </span>    
              </li>
   {FilterData.map((record, index) => (
-    <li key={index} className="pl-4 hover:bg-gray-500 hover:rounded-lg hover:bg-opacity-50">
+    <li key={index} className="pl-2 hover:bg-gray-500 hover:rounded-lg hover:bg-opacity-50">
       <div className="flex">
-        <span className="font-semibold w-16">{index}</span>
-        <span className=" w-28">{record.city_name} </span>
-        <span className=" w-32">{record.date}</span>
+        <span className="font-thin w-16">{index}</span>
+        <span className=" w-28 font-thin">{record.city_name} </span>
+        <span className=" w-32 font-thin">{record.date}</span>
         <span className="flex justify-between w-28">
-            <span className='pl-4'>{record.temperature}</span>
+            <span className='pl-4 font-thin'>{record.temperature}</span>
             <span className='pr-8 font-semibold'>°C</span>
         </span>
         <span className="flex justify-between w-20">
-            <span className='pl-2'>{record.humidity}</span>
+            <span className='pl-2 font-thin'>{record.humidity}</span>
             <span className='pr-4 font-semibold'>%</span>
         </span>
         <span className="flex justify-between w-28">
-            <span className='pl-2'>{record.wind_speed}</span>
+            <span className='pl-2 font-thin'>{record.wind_speed}</span>
             <span className='pr-2 font-semibold'>km/h</span>
         </span>
       </div>
@@ -143,10 +143,10 @@ function WeatherData() {
 </ul>
 
           </div>
-        <div className='mx-2 min-w-fit'>
-          <h1 className='min-w-100 max-w-full py-2 my-5 text-xl font-semibold hover:font-bold hover:underline hover:decoration-emerald-500 '>Average Temp: {averageTemperature.toFixed(2)}</h1>
-          <h1 className='min-w-100 max-w-full py-2 my-5 text-xl font-semibold hover:underline hover:decoration-emerald-500 hover:font-bold'>Average Humidity: {averageHumidity.toFixed(2)}</h1>
-          <h1 className='min-w-100 max-w-full py-2 my-5 text-xl font-semibold hover:underline hover:decoration-emerald-500 hover:font-bold'>Average WindSpeed:  {averageWindSpeed.toFixed(2)}</h1>
+        <div className='mx-2 min-w-fit max-w-full'>
+          <h1 className='min-w-full max-w-full py-2 my-3 text-2xl font-semibold hover:font-bold hover:underline hover:decoration-emerald-500 box-Shadow rounded-lg px-2 text-gray-700 bg-white bg-opacity-80 mx-2'>Average Temp <br/> <span className=' text-xl font-thin'>{averageTemperature.toFixed(2)} °C</span></h1>
+          <h1 className='min-w-full max-w-full py-2 my-3 text-2xl font-semibold hover:font-bold hover:underline hover:decoration-emerald-500 box-Shadow rounded-lg px-2 text-gray-700 bg-white bg-opacity-80 mx-2'>Average Humidity <br/> <span className=' text-xl font-thin'>{averageHumidity.toFixed(2)} %</span></h1>
+          <h1 className='min-w-full max-w-full py-2 my-3 text-2xl font-semibold  hover:underline hover:decoration-emerald-500 box-Shadow rounded-lg px-2 text-gray-700 bg-white bg-opacity-80 mx-2'>Average Wind Speed <br/> <span className=' text-xl font-thin'>{averageWindSpeed.toFixed(2)} KM/H</span></h1>
         </div>
         </div>
         {selectedCity ==="" ? <p className='bg-red-100 my-10 rounded-lg px-10 font-mono font-bold bg-opacity-50 py-5 items-center justify-center mx-20'>
@@ -154,17 +154,17 @@ function WeatherData() {
           
           :
         
-        <div className='max-w-auto h-fit min-w-screen-sm'>
-        <TemperatureGraph dates={formatDates(allDates)} temperatures={allTemp} label1={'Temperature'} color={'#22092C'} bgc={'#872341'}/>
-        <TemperatureGraph dates={formatDates(allDates)} temperatures={allHumidity} label1={'Humidity'} color={'#EC8F5E'} bgc={'#F1EB90'}/>
-        <TemperatureGraph dates={formatDates(allDates)} temperatures={allWindspeed} label1={'Wind Speed'} color={'aqua'} bgc={'#2D9596'}/>
+        <div className='w-full h-fit  box-Shadow rounded-sm'>
+        <TemperatureGraph dates={formatDates(allDates)} temperatures={allTemp} label1={'Temperature'} color={'#22092C'} bgc={'#872341'} backgroundcColor={'#872341'}/>
+        <TemperatureGraph dates={formatDates(allDates)} temperatures={allHumidity} label1={'Humidity'} color={'#EC8F5E'} bgc={'#F1EB90'} backgroundcColor={'#888888'}/>
+        <TemperatureGraph dates={formatDates(allDates)} temperatures={allWindspeed} label1={'Wind Speed'} color={'aqua'} bgc={'#2D9596'} backgroundcColor={'#888888'}/>
         </div>
         }
         
         </div>
-        <div className='p-6 w-1/4 bg-slate-100 m-4 rounded-lg h-screen'>
+        <div className='p-6 w-1/4 bg-slate-100 Under-Line bg-opacity-70 m-4 rounded-lg h-screen'>
          <h3 className=' font-semibold'>Filter by City:</h3>
-         <select value={selectedCity} onChange={handleCityChange} className='border-3 bg-gray-600 rounded-md m-4 bg-opacity-40 mx-4'>
+         <select value={selectedCity} onChange={handleCityChange} className='box-Shadow rounded-sm m-2 bg-opacity-40 min-w-10 max-w-fit' >
         <option className='hover:underline hover:divide-emerald-400' value="">ALL</option>
         {uniqueCities.map((city, index) => (
           <option key={index} value={city}>
@@ -174,13 +174,17 @@ function WeatherData() {
         </select>
         <h3 className=' py-4 my-2 font-semibold'>Filter By Range: </h3>
         <div class="flex items-center justify-center">
-        <Slider range defaultValue={[0, 365]} allowCross={false} onChange={handleChange} className=' w-48'/>
+        <Slider range defaultValue={[0, 365]} allowCross={false} onChange={handleChange} className=' max-w-full min-w-14' />
         </div>
-        <div className='my-4 flex justify-between'>
-        <p>{startDate}</p>
-        <p>{endDate}</p>
-        </div>
-        <h1 className=' font-semibold my-6'>Highest Average Temperature by Date Range: <br/> <span className='hover:font-bold hover:underline font-mono font-semibold hover:decoration-emerald-400 m-4 p-4'>{highestAvgTemp.highestAverageTemp.toFixed(2)} in {highestAvgTemp.city}</span></h1>
+       <div class="my-4 flex flex-col md:flex-row justify-between items-center">
+  <p class="mb-2 md:mb-0 md:mr-4">{ startDate }</p>
+  <p>{ endDate }</p>
+</div>
+          <div className='box-Shadow my-3 bg-white bg-opacity-50 mx-2 rounded-lg'>
+        <h1 className=' font-semibold text-teal-500 pl-4 pt-4'>Highest Average Temperature by Date Range</h1> <br/> 
+        <span className='hover:font-bold hover:underline text-lg font-mono font-semibold hover:decoration-emerald-400 m-4 p-4'>{highestAvgTemp.highestAverageTemp.toFixed(2)} in {highestAvgTemp.city}</span>
+      </div>
+      
       </div>
       </div>
     );
